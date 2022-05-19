@@ -17,6 +17,8 @@ gcloud run deploy delivery-streamlit \
 
 ## Local 
 
+try local 
+
 ´´´
 docker build -t streamlit .
 ´´´
