@@ -1,3 +1,7 @@
-numpy==1.20.3
-pandas==1.2.4
-streamlit==0.82.0
+numpy
+pandas
+streamlit
+ortools==9.3.10497
+scipy==1.8.0
+plotly==5.7.0
+matplotlib==3.5.2

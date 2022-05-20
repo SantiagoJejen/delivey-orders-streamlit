@@ -26,3 +26,7 @@ docker build -t streamlit .
 ```
 docker run -d -p 80:8080 --name my_streamlit streamlit 
 ```
+
+https://cloud.google.com/community/tutorials/cicd-cloud-run-github-actions
+
+https://www.cloudskillsboost.google/focuses/1038?locale=es&parent=catalog#:~:text=Cree%20una%20cuenta%20de%20servicio,en%20%2B%20Crear%20cuenta%20de%20servicio

@@ -8,6 +8,8 @@ from random import randint
 import pandas as pd
 import plotly.express as px
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+
 
 from variables import ubi  as ubi_clientes
 from variables import ubistores  as ubi_stores
@@ -93,9 +95,9 @@ data_load_state = st.text('Loading data...')
 data = load_data(ubi_clientes, ubi_stores)
 data_load_state.text("Done! (using st.cache)")
 
-if st.checkbox('Show raw data'):
-    st.subheader('Raw data')
-    st.write(data)
+if st.checkbox('Show results'):
+    st.subheader('Orders Rio de Janeiro')
+    st.write(data[['client','lat','log','OriginStore','day']])
 
 fig = px.bar(data, x='day', y='count',
               color='OriginStore',
@@ -119,7 +121,192 @@ category = st.selectbox(
      (data['day'].unique()))
 
 figubi = px.scatter_mapbox(data[data.day==category], lat="lat", lon="log", hover_name="name", hover_data=["OriginStore"], 
-                         zoom=13, height=500, color = 'OriginStore')
+                         zoom=9, height=500, color = 'OriginStore')
 figubi.update_layout(mapbox_style="open-street-map")
 figubi.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 st.plotly_chart(figubi, use_container_width=True)
+
+
+numtienda = 0
+tienda ='store3'
+base1 =  data[(data.OriginStore == numtienda) & (data.day.isin([category]))]
+#base1 =  data[(data.day.isin([11]))]
+for m in base1.day.unique().astype('int32'):
+    base = base1[base1.day.astype('int32') == m]
+    clientes = [i for i in base.client]
+    arcos = [(i,j) for i in clientes for j in clientes if i != j]
+    distancia = {(i,j): distance.euclidean(ubi_clientes[i], ubi_clientes[j]) 
+                              for i,j in arcos}
+    for i in clientes:
+        distancia[(tienda,i)] = distance.euclidean(ubi_stores[numtienda], ubi_clientes[i]) 
+    n = len(clientes)
+    values = []
+    for i in range(n):
+        values.append(clientes[i])
+    values.append(tienda)
+    starting_node = tienda
+    NN = [starting_node]
+    while len(NN)<=n:
+        k = NN[-1]
+        nn = {(k,j):distancia[(k,j)] for j in values if k != j and j not in NN}
+        new = min(nn.items(),key = lambda x:x[1])
+        NN.append(new[0][1])
+    NN.append(starting_node)
+    latitud = []
+    for i in clientes:
+        latitud.append(ubi_clientes[i][0])
+    latitud.append(ubi_stores[numtienda][0])
+    longitud = []
+    for i in clientes:
+        longitud.append(ubi_clientes[i][1])
+    longitud.append(ubi_stores[numtienda][1])
+    clientes.append(tienda)
+    x = longitud
+    y = latitud
+
+    fig = go.Figure(go.Scattermapbox(
+      mode = "markers+lines",
+      lon = longitud,
+      lat = latitud,
+      marker = {'size': 10}))
+
+
+
+
+tienda ='store3'
+numtienda = 1
+base1 =  data[(data.OriginStore == 1) & (data.day.isin([category]))]
+for m in base1.day.unique().astype('int32'):
+    base = base1[base1.day.astype('int32') == m]
+    clientes = [i for i in base.client]
+    arcos = [(i,j) for i in clientes for j in clientes if i != j]
+    distancia = {(i,j): distance.euclidean(ubi_clientes[i], ubi_clientes[j]) 
+                              for i,j in arcos}
+    for i in clientes:
+        distancia[(tienda,i)] = distance.euclidean(ubi_stores[numtienda], ubi_clientes[i]) 
+    n = len(clientes)
+    values = []
+    for i in range(n):
+        values.append(clientes[i])
+    values.append(tienda)
+    starting_node = tienda
+    NN = [starting_node]
+    while len(NN)<=n:
+        k = NN[-1]
+        nn = {(k,j):distancia[(k,j)] for j in values if k != j and j not in NN}
+        new = min(nn.items(),key = lambda x:x[1])
+        NN.append(new[0][1])
+    NN.append(starting_node)
+    latitud = []
+    for i in clientes:
+        latitud.append(ubi_clientes[i][0])
+    latitud.append(ubi_stores[numtienda][0])
+    longitud = []
+    for i in clientes:
+        longitud.append(ubi_clientes[i][1])
+    longitud.append(ubi_stores[numtienda][1])
+    clientes.append(tienda)
+    x = longitud
+    y = latitud
+
+    fig.add_trace(go.Scattermapbox(
+        mode = "markers+lines",
+        lat = latitud,
+        lon = longitud,
+        marker = {'size': 10}))
+  
+
+tienda ='store3'
+numtienda = 2
+base1 =  data[(data.OriginStore == numtienda) & (data.day.isin([category]))]
+for m in base1.day.unique().astype('int32'):
+    base = base1[base1.day.astype('int32') == m]
+    clientes = [i for i in base.client]
+    arcos = [(i,j) for i in clientes for j in clientes if i != j]
+    distancia = {(i,j): distance.euclidean(ubi_clientes[i], ubi_clientes[j]) 
+                              for i,j in arcos}
+    for i in clientes:
+        distancia[(tienda,i)] = distance.euclidean(ubi_stores[numtienda], ubi_clientes[i]) 
+    n = len(clientes)
+    values = []
+    for i in range(n):
+        values.append(clientes[i])
+    values.append(tienda)
+    starting_node = tienda
+    NN = [starting_node]
+    while len(NN)<=n:
+        k = NN[-1]
+        nn = {(k,j):distancia[(k,j)] for j in values if k != j and j not in NN}
+        new = min(nn.items(),key = lambda x:x[1])
+        NN.append(new[0][1])
+    NN.append(starting_node)
+    latitud = []
+    for i in clientes:
+        latitud.append(ubi_clientes[i][0])
+    latitud.append(ubi_stores[numtienda][0])
+    longitud = []
+    for i in clientes:
+        longitud.append(ubi_clientes[i][1])
+    longitud.append(ubi_stores[numtienda][1])
+    clientes.append(tienda)
+    x = longitud
+    y = latitud
+
+    fig.add_trace(go.Scattermapbox(
+        mode = "markers+lines",
+        lat = latitud,
+        lon = longitud,
+        marker = {'size': 10}))
+
+tienda ='store3'
+numtienda = 3
+base1 =  data[(data.OriginStore == numtienda) & (data.day.isin([category]))]
+for m in base1.day.unique().astype('int32'):
+    base = base1[base1.day.astype('int32') == m]
+    clientes = [i for i in base.client]
+    arcos = [(i,j) for i in clientes for j in clientes if i != j]
+    distancia = {(i,j): distance.euclidean(ubi_clientes[i], ubi_clientes[j]) 
+                              for i,j in arcos}
+    for i in clientes:
+        distancia[(tienda,i)] = distance.euclidean(ubi_stores[numtienda], ubi_clientes[i]) 
+    n = len(clientes)
+    values = []
+    for i in range(n):
+        values.append(clientes[i])
+    values.append(tienda)
+    starting_node = tienda
+    NN = [starting_node]
+    while len(NN)<=n:
+        k = NN[-1]
+        nn = {(k,j):distancia[(k,j)] for j in values if k != j and j not in NN}
+        new = min(nn.items(),key = lambda x:x[1])
+        NN.append(new[0][1])
+    NN.append(starting_node)
+    latitud = []
+    for i in clientes:
+        latitud.append(ubi_clientes[i][0])
+    latitud.append(ubi_stores[numtienda][0])
+    longitud = []
+    for i in clientes:
+        longitud.append(ubi_clientes[i][1])
+    longitud.append(ubi_stores[numtienda][1])
+    clientes.append(tienda)
+    x = longitud
+    y = latitud
+
+    fig.add_trace(go.Scattermapbox(
+        mode = "markers+lines",
+        lat = latitud,
+        lon = longitud,
+        marker = {'size': 10}))
+
+
+fig.update_layout(
+    margin ={'l':0,'t':0,'b':0,'r':0},
+    mapbox = {
+    'center': {'lon': -43.177066, 'lat': -22.928113},
+    'style': "stamen-terrain",
+    'center': {'lon': -43.177066, 'lat': -22.928113},
+    'zoom': 9})
+
+st.plotly_chart(fig, use_container_width=True)
